@@ -1,0 +1,37 @@
+#include "bits/stdc++.h"
+using namespace std; 
+using ll = long long; 
+/*
+	given an integer in the range 1e5
+	output the number of ways we can represent
+	it with the sum of only 1 and 3
+	i.e 
+		4 = 1 + 1 + 1 + 1
+		4 = 1 + 3
+		4 = 3 + 1
+	the number can be very large so, output it
+	with modulo 1e9 + 7; 
+*/
+const int N = 1e5 + 1, mod = 1e9 + 7;
+int ways[N];
+int count(int n) {
+	if (n == 1) return 1; 
+	if (n == 2) return 1; 
+	if (n == 3) return 2;
+	if (ways[n] != - 1) 
+		return ways[n];
+	return ways[n] = (count(n - 1) + count(n - 3)) % mod; 
+}
+void solve() {
+	int n; 
+	cin >> n; 
+	memset(ways, -1, sizeof ways);
+	cout << count(n) << '\n';
+}
+int main () {
+	ios_base::sync_with_stdio(0);
+	cin.tie(0);
+	int T = 1; 
+	// cin >> T; 
+	while (T--) solve(); 
+}
