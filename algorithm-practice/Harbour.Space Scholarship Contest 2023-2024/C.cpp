@@ -1,58 +1,36 @@
 #include "bits/stdc++.h"
 using namespace std; 
 using ll = long long; 
-
-bool prime(ll x) {
-	if (x % 2 == 0) 
-		return false;  
-	for (ll i = 2; i * i <= x; i++) {
-		if (x % i == 0) {
-			return false;
-		}
-	}
-	return true;
-}
-
 void solve() {
-	ll n; cin >> n;
-	map<ll, int> m;
-	vector <ll> p;
-	p.push_back(n);
-	while (n > 1) {
-		// cout << n << ' ';
-		bool f = 0;
-		for (ll i = 2; i * i <= n; i++) {
-			if (n % i == 0 and m[n / i] < 2) {
-				// cout << i << ' ';
-				if (prime(n - (n / i))) {
-					continue;
-				} 
-				p.push_back(n - (n / i)); 
-				n -= (n / i);
-				f = 1;
-				m[n / i]++;
-				break;
-			}
-		}
-		if (!f) {
-			if (n == 1) 
-				break;
-			// cout << n - 1 << ' ';
-			
-			if (prime(n)){
-				p.push_back(n - 1);
-				n -= 1;
-			} else {
-				p.push_back(n - 2);
-				n -= 2; 
-			}
-		}
-	}	
-	cout << p.size() << '\n'; 
-	for (int i  = 0; i + 1 < p.size(); i++){ 
-		cout << p[i] << ' ';
+	ll n, x;
+	cin >> n; 
+	x = n; 
+	vector <bool> bits; 
+	while (n) {
+		bits.push_back(n & 1); 
+		n >>= 1; 
 	}
-	cout << 1 << '\n';
+	reverse(bits.begin(), bits.end()); 
+	// for (auto i : bits) cout << i;
+	ll p = 1;
+	vector <ll> diffs; 
+	diffs.push_back(x);
+	if (x > 1){	
+		for (int i = bits.size() - 1; i > 0; i--) {
+			if (bits[i]) {
+				x -= p; 
+				diffs.push_back(x);
+			}
+			p *= 2;
+		}
+		while (x != 1) {
+			diffs.push_back(x - (x / 2));
+			x -= (x / 2); 
+		}
+	}
+	cout << diffs.size() << '\n';
+	for (auto i : diffs) cout << i << ' ';
+	cout << '\n';
 }
 int main () {
 	ios_base::sync_with_stdio(0);
