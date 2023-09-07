@@ -1,43 +1,44 @@
 #include "bits/stdc++.h"
-using namespace std;
-using ll = long long;
-const int N = 2e5 + 1;  
-vector <pair<int, bool>> v[N];
-vector <bool> Z; 
-ll mod = 998244353LL; 
-ll n;
-ll z[N]; 
-ll dfs(int u) {
-	for (auto x : v[u]) {
-		Z.push_back(x.second); 
-		dfs(x.first);
+using namespace std; 
+using ll = long long; 
+int n;
+const int N = 1e5 + 2;
+vector <pair <ll, bool>> adj[N];
+ll inv[N], oneCnt[N], zeroCnt[N];
+bool vis[N]; 
+const ll mod = 998244353LL; 
+void dfs(int parent) {
+	vis[parent] = true;
+	for (auto i : adj[parent]) {
+		int child = i.first, w = i.second; 
+		if (!vis[child]) {
+			dfs(child); 
+		}
+		zeroCnt[parent] = (zeroCnt[parent] + zeroCnt[child]) % mod + (w == 0);
+		inv[parent] = (inv[parent] + inv[child]) % mod;
+		inv[parent] = (inv[parent] + ((oneCnt[parent] % mod) * (zeroCnt[child] % mod)) % mod) % mod;;
+		if (w) 
+			inv[parent] = (inv[parent] + zeroCnt[child]) % mod;
+		else
+			inv[parent] = (inv[parent] + oneCnt[parent]) % mod;
+		// inv[parent] += (ll)inv[child] + (ll)((oneCnt[parent] * zeroCnt[child])) + 
+					// (ll)((zeroCnt[child]) * (w == 1)) + (ll)(oneCnt[parent] * (w == 0));
+		// inv[parent] =  (inv[parent] % mod + mod) % mod;
+		oneCnt[parent] = (oneCnt[parent] + oneCnt[child]) % mod + (w == 1);
 	}
-
 }
 
 void solve() {
-		cin >> n; 
-
-		for (int i = 1; i <= n; i++) {
-			int m; cin >> m; 
-			for (int j = 1; j <= m; j++) {
-				int x; bool w; cin >> x >> w; 
-				v[i].push_back({x, w}); 
-			}
+	cin >> n; 
+	for (int i = 1; i <= n; i++) {
+		int q; cin >> q; 
+		while (q--) {
+			int x; bool w; cin >> x >> w; 
+			adj[i].push_back({x, w});
 		}
-		dfs(1LL); 
-		int zero = 0;
-		ll ans = 0LL;
-		 
-		for (int i = Z.size() - 1; i >= 0; i--) {
-			if (Z[i]) {
-				ans += zero; 
-				ans %= mod;
-			}
-			else
-				zero++; 
-		}
-		cout << ans << '\n';
+	}
+	dfs(1);
+	cout << inv[1] << '\n';
 }
 int main () {
 	ios_base::sync_with_stdio(0);
@@ -46,3 +47,5 @@ int main () {
 	// cin >> T; 
 	while (T--) solve(); 
 }
+// 942385756
+// 942385756
